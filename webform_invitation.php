@@ -52,8 +52,13 @@ function webform_invitation_settings_form($form, &$form_state, $nid) {
   $form['wi_enabled'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable invitations for this webform'),
-    '#default_value' => $db_setting ? (int) $db_setting['invitation'] : 0,
+    '#default_value' => $db_setting ? (int) $db_setting['invitatiaon'] : 0,
   );
+  $form['mail_list'] = array( //160927 added by J
+    '#type' => 'textarea',//160927 added by J
+    '#title' => t('List of mails of receipiens for this webform'),
+    '#default_value' => "",
+  );  
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
@@ -142,9 +147,9 @@ function webform_invitation_codes_page($node) {
   $out = "<h2>" . t('All invitation codes for %node_title', array("%node_title" => $node->title)) . "</h2>";
   $out .= "<p><a href='" . $base_url . "/node/" . $nid . "/webform/invitation-download'>" . t('Download Codes') . "</a></p>";
   if (count($codes) > 0) {
-    $out .= "<table><tr><th>" . t('Code') . "</th><th>" . t('used?') . "</th><th>" . t('Submission ID') . "</th></tr>";
+    $out .= "<table><tr><th>" . t('mail') . "</th><th>" . t('Code') . "</th><th>" . t('used?') . "</th><th>" . t('Submission ID') . "</th></tr>";//160927 added by J
   	foreach ($codes as $code) {
-  	  $out .= '<tr><td>' . $code->code . '</td><td>' . ($code->used != NULL ? t('yes') : t('no')) . '</td><td>' . ($code->used != NULL ? l($code->sid,'node/' . $nid . '/submission/' . $code->sid) : '') . '</td></tr>';
+  	  $out .= '<tr><td>' . $code->mail . '</td><td>' . $code->code . '</td><td>' . ($code->used != NULL ? t('yes') : t('no')) . '</td><td>' . ($code->used != NULL ? l($code->sid,'node/' . $nid . '/submission/' . $code->sid) : '') . '</td></tr>';//160927 added by J
   	}
   	$out .= '</table>';
   }
