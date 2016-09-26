@@ -23,6 +23,20 @@ function webform_invitation_schema() {
 		        'not null' => TRUE,
 		        'default' => '',
       ),
+			'mail' => array(
+				'description' => 'mail of participant.',
+		        'type' => 'varchar',
+		        'length' => 64,
+		        'not null' => TRUE,
+		        'default' => '',
+      ), 
+			'fullname' => array(
+				'description' => 'full name of participant.',
+		        'type' => 'varchar',
+		        'length' => 64,
+		        'not null' => TRUE,
+		        'default' => '',
+      ),      
 			'time_generated' => array(
 				'description' => 'The Unix timestamp when the code was generated.',
 		        'type' => 'int',
