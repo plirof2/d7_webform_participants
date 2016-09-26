@@ -254,7 +254,8 @@ function webform_invitation_validate_option_count($element, &$form_state) {
 }
 
 function webform_invitation_generate_form_submit($form, &$form_state) {
-  $number = $form_state['values']['number_of_tokens'];
+  $number = $form_state['values']['number_of_tokens']; 
+  // $number = $count_lines_of_copied_text_with_mails;  //160927 J Implement this
   $nid = $form_state['values']['nid'];
   if ($form_state['values']['type_of_tokens'] == 1) {
     $i = $l = 1;
