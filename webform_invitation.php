@@ -182,6 +182,15 @@ function webform_invitation_generate_form($form, &$form_state, $node) {
     '#element_validate' => array('webform_invitation_validate_numeric_count'),
     '#required' => true,
   );
+  // added by J 160927++++++++++++++
+  $form['participant_mails'] = array(
+    '#type' => 'textarea',
+    '#title' => t('paste email of the participants here (1 mail in each line)'),
+    //'#default_value' => array(      25   ),
+    //'#element_validate' => array('webform_invitation_validate_numeric_count'),
+    '#required' => true,
+  );  
+  // added by J 160927------------
   $form['options'] = array(
     '#type' => 'fieldset',
     '#title' => t('Options'),
@@ -192,7 +201,7 @@ function webform_invitation_generate_form($form, &$form_state, $node) {
     '#type' => 'radios',
     '#title' => t('type of tokens'),
     '#default_value' => 1,
-    '#options' => array(1 => t('md5 hash (32 characters)'), 99 => t('custom')),
+    '#options' => array(1 => t('md5 hash (32 characters)'), 99 => t('custom'),200 => t('pasted_email_list')),
   );
   $form['options']['length_of_tokens'] = array(
     '#type' => 'textfield',
@@ -321,6 +330,44 @@ function webform_invitation_generate_form_submit($form, &$form_state) {
       $l++;
     }
   }
+  //added by J 160927+++++++++++++++++++
+  elseif ($form_state['values']['type_of_tokens'] == 200) {
+	  
+	  $tring=number = $form_state['values']['participant_mails'];
+	  // this regex handles more email address formats like a+b@google.com.sg, and the i makes it case insensitive
+	$pattern = '/[a-z0-9_\-\+]+@[a-z0-9\-]+\.([a-z]{2,3})(?:\.[a-z]{2})?/i';
+
+	// preg_match_all returns an associative array
+	preg_match_all($pattern, $string, $matches);
+
+	// the data you want is in $matches[0], dump it with var_export() to see it
+	//var_export($matches[0]);
+	  
+	  $number = count($matches[0]);  //160927 J Implement this
+    $i = $l = 1;
+    while ($i <= $number && $l < $number * 10) {
+      // Code generation
+      $code = md5(microtime(1) * rand());
+      
+      try {
+        // Insert code to DB
+        $tmpres = db_insert('webform_invitation_codes')->fields(array(
+          'nid' => $nid,
+          'code' => $code,
+          'mail' => $matches[0][$i], //added by J 160927
+          'time_generated' => REQUEST_TIME,
+          'used' => NULL,
+          'sid' => 0,
+        ))->execute();
+        $i++;
+      }
+      catch (PDOException $e) {
+        // The generated code is already in DB; make another one.
+      }
+      $l++;
+    }	  
+  }
+  //added by J 160927-------------------
   $codes_count = $i - 1;
   if ($l >= $number * 10) {
     drupal_set_message(t('Due to unique constraint, only @ccount codes have been generated.', array('@ccount' => $codes_count)),'error');
@@ -361,7 +408,7 @@ function webform_invitation_code_validate($form, &$form_state) {
       ->fetchAssoc();
     if (!isset($result) || $result == NULL) {
       form_set_error('webform_invitation_code', t('This code is not valid.'));
-    }
+    }(
     elseif ($result['used'] > 0) {
       // Not required, handled by webform => UNIQUE option.
       #form_set_error('invitation_code', 'This code has already been used.');
