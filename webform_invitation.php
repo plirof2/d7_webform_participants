@@ -342,21 +342,21 @@ function webform_invitation_generate_form_submit($form, &$form_state) {
 	preg_match_all($pattern, $string, $matches);
 
 	// the data you want is in $matches[0], dump it with var_export() to see it
-	var_export($matches[0]);
+	//var_export($matches[0]);
 	  
 	  $number = count($matches[0]);  //160927 J Implement this
     $i = $l = 1;
     while ($i <= $number && $l < $number * 10) {
       // Code generation
       $code = md5(microtime(1) * rand());
-      //$matches[0][$i]="zzzzz@zzz.com"; // HARD CODED added by J
+      //$matches[0][$i]=$string; // HARD CODED added by J DEBUG
       try {
         // Insert code to DB
         $tmpres = db_insert('webform_invitation_codes')->fields(array(
           'nid' => $nid,
           'code' => $code,
-         // 'mail' => $matches[0][$i], //added by J 160927
-          'mail' => $matches[$i], //added by J 160927
+          'mail' => $matches[0][$i], //added by J 160927
+         // 'mail' => $matches[1][$i], //added by J 160927
           'time_generated' => REQUEST_TIME,
           'used' => NULL,
           'sid' => 0,
