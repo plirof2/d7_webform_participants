@@ -332,8 +332,8 @@ function webform_invitation_generate_form_submit($form, &$form_state) {
   }
   //added by J 160927+++++++++++++++++++
   elseif ($form_state['values']['type_of_tokens'] == 200) {
-	  
-	  $tring=number = $form_state['values']['participant_mails'];
+	
+	  $string= $form_state['values']['participant_mails'];
 	  // this regex handles more email address formats like a+b@google.com.sg, and the i makes it case insensitive
 	$pattern = '/[a-z0-9_\-\+]+@[a-z0-9\-]+\.([a-z]{2,3})(?:\.[a-z]{2})?/i';
 
