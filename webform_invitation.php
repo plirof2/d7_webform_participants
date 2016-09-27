@@ -188,7 +188,7 @@ function webform_invitation_generate_form($form, &$form_state, $node) {
     '#title' => t('paste email of the participants here (1 mail in each line)'),
     //'#default_value' => array(      25   ),
     //'#element_validate' => array('webform_invitation_validate_numeric_count'),
-    '#required' => true,
+    '#required' => false,
   );  
   // added by J 160927------------
   $form['options'] = array(
@@ -288,6 +288,7 @@ function webform_invitation_generate_form_submit($form, &$form_state) {
       $l++;
     }
   }
+  
   elseif ($form_state['values']['type_of_tokens'] == 99) {
     $length = $form_state['values']['length_of_tokens'];
     $char_sets = $form_state['values']['chars_of_tokens'];
@@ -333,7 +334,7 @@ function webform_invitation_generate_form_submit($form, &$form_state) {
   //added by J 160927+++++++++++++++++++
   elseif ($form_state['values']['type_of_tokens'] == 200) {
 	
-	  $string= $form_state['values']['participant_mails'];
+	  $string=$form_state['values']['participant_mails'];
 	  // this regex handles more email address formats like a+b@google.com.sg, and the i makes it case insensitive
 	$pattern = '/[a-z0-9_\-\+]+@[a-z0-9\-]+\.([a-z]{2,3})(?:\.[a-z]{2})?/i';
 
@@ -341,20 +342,21 @@ function webform_invitation_generate_form_submit($form, &$form_state) {
 	preg_match_all($pattern, $string, $matches);
 
 	// the data you want is in $matches[0], dump it with var_export() to see it
-	//var_export($matches[0]);
+	var_export($matches[0]);
 	  
 	  $number = count($matches[0]);  //160927 J Implement this
     $i = $l = 1;
     while ($i <= $number && $l < $number * 10) {
       // Code generation
       $code = md5(microtime(1) * rand());
-      
+      //$matches[0][$i]="zzzzz@zzz.com"; // HARD CODED added by J
       try {
         // Insert code to DB
         $tmpres = db_insert('webform_invitation_codes')->fields(array(
           'nid' => $nid,
           'code' => $code,
-          'mail' => $matches[0][$i], //added by J 160927
+         // 'mail' => $matches[0][$i], //added by J 160927
+          'mail' => $matches[$i], //added by J 160927
           'time_generated' => REQUEST_TIME,
           'used' => NULL,
           'sid' => 0,
@@ -363,6 +365,7 @@ function webform_invitation_generate_form_submit($form, &$form_state) {
       }
       catch (PDOException $e) {
         // The generated code is already in DB; make another one.
+        
       }
       $l++;
     }	  
@@ -408,7 +411,7 @@ function webform_invitation_code_validate($form, &$form_state) {
       ->fetchAssoc();
     if (!isset($result) || $result == NULL) {
       form_set_error('webform_invitation_code', t('This code is not valid.'));
-    }(
+    }//(  //comment by J
     elseif ($result['used'] > 0) {
       // Not required, handled by webform => UNIQUE option.
       #form_set_error('invitation_code', 'This code has already been used.');
