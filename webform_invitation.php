@@ -54,11 +54,13 @@ function webform_invitation_settings_form($form, &$form_state, $nid) {
     '#title' => t('Enable invitations for this webform'),
     '#default_value' => $db_setting ? (int) $db_setting['invitatiaon'] : 0,
   );
+  /*
   $form['mail_list'] = array( //160927 added by J
     '#type' => 'textarea',//160927 added by J
     '#title' => t('List of mails of receipiens for this webform'),
     '#default_value' => "",
-  );  
+  );
+  */  
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
@@ -200,8 +202,8 @@ function webform_invitation_generate_form($form, &$form_state, $node) {
   $form['options']['type_of_tokens'] = array(
     '#type' => 'radios',
     '#title' => t('type of tokens'),
-    '#default_value' => 1,
-    '#options' => array(1 => t('md5 hash (32 characters)'), 99 => t('custom'),200 => t('pasted_email_list')),
+    '#default_value' => 200,
+    '#options' => array(200 => t('pasted_email_list'),1 => t('md5 hash (32 characters)'), 99 => t('custom')),
   );
   $form['options']['length_of_tokens'] = array(
     '#type' => 'textfield',
@@ -210,7 +212,7 @@ function webform_invitation_generate_form($form, &$form_state, $node) {
       32
     ),
     '#element_validate' => array('webform_invitation_validate_numeric_length'),
-    '#states' => array('invisible' => array(':input[name="type_of_tokens"]' => array('value' => 1))),
+    '#states' => array('invisible' => array(':input[name="type_of_tokens"]' => array('value' => 1,'value' => 200))),
   );
   $form['options']['chars_of_tokens'] = array(
     '#type' => 'checkboxes',
@@ -226,7 +228,7 @@ function webform_invitation_generate_form($form, &$form_state, $node) {
       5 => t('special characters (#+*=$%&|)'),
     ),
     '#element_validate' => array('webform_invitation_validate_option_count'),
-    '#states' => array('invisible' => array(':input[name="type_of_tokens"]' => array('value' => 1))),
+    '#states' => array('invisible' => array(':input[name="type_of_tokens"]' => array('value' => 1,'value' => 200))),
   );
   $form['submit'] = array(
     '#type' => 'submit',
@@ -331,15 +333,17 @@ function webform_invitation_generate_form_submit($form, &$form_state) {
       $l++;
     }
   }
-  //added by J 160927+++++++++++++++++++
+  //added by J 160927++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   elseif ($form_state['values']['type_of_tokens'] == 200) {
 	
 	  $string=$form_state['values']['participant_mails'];
 	  // this regex handles more email address formats like a+b@google.com.sg, and the i makes it case insensitive
-	$pattern = '/[a-z0-9_\-\+]+@[a-z0-9\-]+\.([a-z]{2,3})(?:\.[a-z]{2})?/i';
+	//$pattern = '/[a-z0-9_\-\+]+@[a-z0-9\-]+\.([a-z]{2,3})(?:\.[a-z]{2})?/i'; //orig
+$pattern="//";
 
 	// preg_match_all returns an associative array
 	preg_match_all($pattern, $string, $matches);
+	$matches[0] = explode(PHP_EOL, $string);
 
 	// the data you want is in $matches[0], dump it with var_export() to see it
 	//var_export($matches[0]);
@@ -349,14 +353,17 @@ function webform_invitation_generate_form_submit($form, &$form_state) {
     while ($i <= $number && $l < $number * 10) {
       // Code generation
       $code = md5(microtime(1) * rand());
+      //preg_match_all($pattern, $string, $matches[0][$i-1]);
       //$matches[0][$i]=$string; // HARD CODED added by J DEBUG
+      !!filter_var($matches[0][$i-1], FILTER_VALIDATE_EMAIL);
       try {
         // Insert code to DB
         $tmpres = db_insert('webform_invitation_codes')->fields(array(
           'nid' => $nid,
           'code' => $code,
-          'mail' => $matches[0][$i], //added by J 160927
-         // 'mail' => $matches[1][$i], //added by J 160927
+       //   'mail' => $matches[0][$i], //added by J 160927
+//          'mail' => $matches[0][$i-1], //added by J 160927 ok working with explode
+           'mail' => $matches[0][$i-1], //added by J 160927
           'time_generated' => REQUEST_TIME,
           'used' => NULL,
           'sid' => 0,
@@ -370,7 +377,7 @@ function webform_invitation_generate_form_submit($form, &$form_state) {
       $l++;
     }	  
   }
-  //added by J 160927-------------------
+  //added by J 160927------------------------------------------------------------
   $codes_count = $i - 1;
   if ($l >= $number * 10) {
     drupal_set_message(t('Due to unique constraint, only @ccount codes have been generated.', array('@ccount' => $codes_count)),'error');
