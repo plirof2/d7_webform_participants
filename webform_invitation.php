@@ -14,7 +14,7 @@ function webform_invitation_menu() {
     'weight' => 11,
     'type' => MENU_LOCAL_TASK,
   );
-  $items['node/%webform_menu/webform/invitation-codes'] = array(
+    $items['node/%webform_menu/webform/invitation-codes'] = array(
     'title' => 'Invitation Codes',
     'page callback' => 'webform_invitation_generate_page',
     'page arguments' => array(1),
@@ -23,6 +23,15 @@ function webform_invitation_menu() {
     'weight' => 12,
     'type' => MENU_LOCAL_TASK,
   );
+    $items['node/%webform_menu/webform/invitation-reminder'] = array(
+    'title' => 'Invitation Reminder Mail',
+    'page callback' => 'webform_invitation_mail_reminder_page',
+    'page arguments' => array(1),
+    'access callback' => 'node_access',
+    'access arguments' => array('update', 1),
+    'weight' => 11,
+    'type' => MENU_LOCAL_TASK,
+  ); 
   $items['node/%webform_menu/webform/invitation-download'] = array(
     'title' => 'Download Codes',
     'page callback' => 'webform_invitation_download_file',
@@ -52,7 +61,7 @@ function webform_invitation_settings_form($form, &$form_state, $nid) {
   $form['wi_enabled'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable invitations for this webform'),
-    '#default_value' => $db_setting ? (int) $db_setting['invitatiaon'] : 0,
+    '#default_value' => $db_setting ? (int) $db_setting['invitation'] : 0,
   );
   /*
   $form['mail_list'] = array( //160927 added by J
@@ -197,7 +206,7 @@ function webform_invitation_generate_form($form, &$form_state, $node) {
     '#type' => 'fieldset',
     '#title' => t('Options'),
     '#collapsible' => true,
-    '#collapsed' => true,
+    '#collapsed' =>false,
   );
   $form['options']['type_of_tokens'] = array(
     '#type' => 'radios',
@@ -234,11 +243,49 @@ function webform_invitation_generate_form($form, &$form_state, $node) {
     '#type' => 'submit',
     '#value' => t('Generate'),
   );
+
+    
   $form['codes'] = array(
     '#markup' => '<div>' . webform_invitation_codes_page($node) . '</div>',
   );
   return $form;
 }
+
+
+// ++++++++added 160928+++++mail_reminder++++++++++++++++++
+
+function webform_invitation_mail_reminder_page($node) {
+  $out = drupal_get_form('webform_invitation_mail_reminder_form', $node);
+  return $out;
+}
+
+function webform_invitation_mail_reminder_form($form, &$form_state, $node) {
+  $nid = $node->nid;
+  $form['intro'] = array(
+    '#markup' => '<h2>' . t('Αποστολή email %node_title', array("%node_title" => $node->title)) . '</h2><p>' . t('To generate codes please enter the required number of codes and hit the button.') . '</p>',
+  );
+  $form['nid'] = array(
+    '#type' => 'hidden',
+    '#value' => $nid,  
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Αποστολή reminder mail '),
+  );
+
+  $form['codes'] = array(
+    '#markup' => '<div>' . webform_invitation_codes_page($node) . '</div>',
+  );
+  
+  return $form;
+}
+
+
+//---------added 160928--------mail_reminder----------------------------
+
+
+
 
 function webform_invitation_validate_numeric_count($element, &$form_state) {
   if (!preg_match('/^\d+$/', $element['#value'])) {
@@ -268,7 +315,7 @@ function webform_invitation_generate_form_submit($form, &$form_state) {
   $number = $form_state['values']['number_of_tokens']; 
   // $number = $count_lines_of_copied_text_with_mails;  //160927 J Implement this
   $nid = $form_state['values']['nid'];
-  if ($form_state['values']['type_of_tokens'] == 1) {
+  if ($form_state['values']['type_of_tokens'] == 1) { // MD5 option
     $i = $l = 1;
     while ($i <= $number && $l < $number * 10) {
       // Code generation
