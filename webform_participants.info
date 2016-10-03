@@ -4,7 +4,7 @@ core = 7.x
 package = Webform
 dependencies[] = webform
 dependencies[] = token
-dependencies[] = simplemail
+dependencies[] = simple_mail
 
 ; Information added by Drupal.org packaging script on 2016-07-07
 version = "7.x-2.4+1-dev"
