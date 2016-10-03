@@ -8,8 +8,8 @@ version 1.0b-beta  20161030 -renamed to participants
  */
 function webform_participants_menu() {
   $items = array();
-  $items['node/%webform_menu/webform/invitation-settings'] = array(
-    'title' => 'Invitation Settings',
+  $items['node/%webform_menu/webform/participants-settings'] = array(
+    'title' => 'Participants Settings',
     'page callback' => 'webform_participants_settings_page',
     'page arguments' => array(1),
     'access callback' => 'node_access',
@@ -17,8 +17,8 @@ function webform_participants_menu() {
     'weight' => 11,
     'type' => MENU_LOCAL_TASK,
   );
-    $items['node/%webform_menu/webform/invitation-codes'] = array(
-    'title' => 'Invitation Codes',
+    $items['node/%webform_menu/webform/participants-codes'] = array(
+    'title' => 'Participants Codes',
     'page callback' => 'webform_participants_generate_page',
     'page arguments' => array(1),
     'access callback' => 'node_access',
@@ -26,8 +26,8 @@ function webform_participants_menu() {
     'weight' => 12,
     'type' => MENU_LOCAL_TASK,
   );
-    $items['node/%webform_menu/webform/invitation-reminder'] = array(
-    'title' => 'Invitation Reminder Mail',
+    $items['node/%webform_menu/webform/participants-reminder'] = array(
+    'title' => 'Participants Reminder Mail',
     'page callback' => 'webform_participants_mail_reminder_page',
     'page arguments' => array(1),
     'access callback' => 'node_access',
@@ -35,7 +35,7 @@ function webform_participants_menu() {
     'weight' => 11,
     'type' => MENU_LOCAL_TASK,
   ); 
-  $items['node/%webform_menu/webform/invitation-download'] = array(
+  $items['node/%webform_menu/webform/participants-download'] = array(
     'title' => 'Download Codes',
     'page callback' => 'webform_participants_download_file',
     'page arguments' => array(1),
@@ -63,8 +63,8 @@ function webform_participants_settings_form($form, &$form_state, $nid) {
   );
   $form['wi_enabled'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Enable invitations for this webform'),
-    '#default_value' => $db_setting ? (int) $db_setting['invitation'] : 0,
+    '#title' => t('Enable participants_module for this webform'),
+    '#default_value' => $db_setting ? (int) $db_setting['participants'] : 0,
   );
   /*
   $form['mail_list'] = array( //160927 added by J
@@ -85,7 +85,7 @@ function webform_participants_settings_form_submit($form, &$form_state) {
   $nid = $form_state['values']['nid'];
   $wi_enabled = $form_state['values']['wi_enabled'];
   if ($wi_enabled == 1) {
-    drupal_set_message(t('Invitation mode has been activated. You should now <a href="!base_url/node/!nid/invitation/generate">create some invitation codes</a>.', array('!base_url' => $base_url, '!nid' => $nid)));
+    drupal_set_message(t('Participants mode has been activated. You should now <a href="!base_url/node/!nid/participants/generate">create some Participants invitation codes</a>.', array('!base_url' => $base_url, '!nid' => $nid)));
     $node = node_load($nid);
     $field_present = false;
     foreach ($node->webform['components'] as $id => $com) {
@@ -105,7 +105,7 @@ function webform_participants_settings_form_submit($form, &$form_state) {
         'cid' => $cid,
         'pid' => 0,
         'form_key' => 'webform_participants_code',
-        'name' => t('Invite Code'),
+        'name' => t('Participant Invite Code'),
         'type' => 'textfield',
         'value' => '[current-page:query:code]',
         'extra' => array(
@@ -132,7 +132,7 @@ function webform_participants_settings_form_submit($form, &$form_state) {
     }
   }
   else {
-    drupal_set_message(t('Invitation mode has been disabled.'));
+    drupal_set_message(t('Participants Invitation mode has been disabled.'));
     $node = node_load($nid);
     foreach ($node->webform['components'] as $id => $com) {
       if ($com['form_key'] == 'webform_participants_code') {
@@ -145,7 +145,7 @@ function webform_participants_settings_form_submit($form, &$form_state) {
   }
   db_merge('webform_participants')->key(array('nid' => $nid))
     ->fields(array(
-      'invitation' => $wi_enabled,
+      'participants' => $wi_enabled,
       'cid' => $cid,
       ))
     ->execute();
@@ -158,8 +158,8 @@ function webform_participants_codes_page($node) {
     ->fields('c')
     ->condition('nid', $nid, '=')
     ->execute()->fetchAll();
-  $out = "<h2>" . t('All invitation codes for %node_title', array("%node_title" => $node->title)) . "</h2>";
-  $out .= "<p><a href='" . $base_url . "/node/" . $nid . "/webform/invitation-download'>" . t('Download Codes') . "</a></p>";
+  $out = "<h2>" . t('All Participant invitation codes for %node_title', array("%node_title" => $node->title)) . "</h2>";
+  $out .= "<p><a href='" . $base_url . "/node/" . $nid . "/webform/participants-download'>" . t('Download Codes') . "</a></p>";
   if (count($codes) > 0) {
     $out .= "<table><tr><th>" . t('mail') . "</th><th>" . t('Code') . "</th><th>" . t('used?') . "</th><th>" . t('Submission ID') . "</th></tr>";//160927 added by J
   	foreach ($codes as $code) {
@@ -357,7 +357,7 @@ function webform_participants_mail_reminder_form_submit($form, &$form_state) {
   }
 // */
 
-  drupal_goto('node/' . $nid . '/webform/invitation-reminder');
+  drupal_goto('node/' . $nid . '/webform/participants-reminder');
 }
 
 
@@ -513,7 +513,7 @@ $pattern="//";
   elseif ($codes_count >= 2) {
     drupal_set_message(t('A total of @ccount codes has been generated.', array('@ccount' => $codes_count)),'status');
   }
-  drupal_goto('node/' . $nid . '/webform/invitation-codes');
+  drupal_goto('node/' . $nid . '/webform/participants-codes');
 }
 
 function webform_participants_form_alter(&$form, &$form_state, $form_id) {
@@ -525,7 +525,7 @@ function webform_participants_form_alter(&$form, &$form_state, $form_id) {
       ->condition('nid', $nid, '=')
       ->execute()
       ->fetchAssoc();
-      if ($db_setting['invitation'] == "1") {
+      if ($db_setting['participants'] == "1") {
         $form['#validate'][] = 'webform_participants_code_validate';
       }
     }
@@ -546,7 +546,7 @@ function webform_participants_code_validate($form, &$form_state) {
     }//(  //comment by J
     elseif ($result['used'] > 0) {
       // Not required, handled by webform => UNIQUE option.
-      #form_set_error('invitation_code', 'This code has already been used.');
+      #form_set_error('participants_code', 'This code has already been used.');
     }
     else {
       // valid code, update db
@@ -566,7 +566,7 @@ function webform_participants_webform_submission_insert($node, $submission) {
     ->condition('nid', $node->nid, '=')
     ->execute()
     ->fetchAssoc();
-  if ($db_setting && (int) $db_setting['invitation'] == 1) {
+  if ($db_setting && (int) $db_setting['participants'] == 1) {
     if ($db_setting['cid'] > 0) {
       $cid = $db_setting['cid'];
     }
