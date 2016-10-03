@@ -1,5 +1,5 @@
 -- SUMMARY --
-
+(to do : write documentation when participant module is ready)
 The Webform Invitation module allows you to restrict submissions to a webform
 by generating codes which may then be distributed e.g. by email to
 participants. Upon activating the invitation mode for a webform a new component
