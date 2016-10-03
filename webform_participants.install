@@ -1,7 +1,7 @@
 <?php
 
-function webform_invitation_schema() {
-	$schema['webform_invitation_codes'] = array(
+function webform_participants_schema() {
+	$schema['webform_participants_codes'] = array(
 		'description' => 'Table for storing generated form tokens.',
 		'fields' => array(
 			'cid' => array(
@@ -66,7 +66,7 @@ function webform_invitation_schema() {
 		'primary key' => array('cid'),
 	);
 	
-	$schema['webform_invitation'] = array(
+	$schema['webform_participants'] = array(
 		'description' => 'Table for storing invitation settings.',
 		'fields' => array(
 			'nid' => array(
@@ -98,8 +98,8 @@ function webform_invitation_schema() {
  *	Remove Webform Invitation textfields from
  *	existing webforms with invitation mode activated.
  */
-function webform_invitation_disable() {
-	$db_settings = db_select('webform_invitation', 'i')
+function webform_participants_disable() {
+	$db_settings = db_select('webform_participants', 'i')
 	    ->fields('i')
 	    ->condition('invitation', 1, '=')
 	    ->execute();
@@ -110,7 +110,7 @@ function webform_invitation_disable() {
 		 * but we better check for the form_key
 		 */
 	    foreach ($node->webform['components'] AS $id => $com) {
-			if ($com['form_key'] == 'webform_invitation_code') {
+			if ($com['form_key'] == 'webform_participants_code') {
 				unset($node->webform['components'][$id]);
 				node_save($node);
 				break;
@@ -122,16 +122,16 @@ function webform_invitation_disable() {
 /**
  * Add submission id column to codes table and component id column to base table.
  */
-function webform_invitation_update_7200() {
-	db_add_field('webform_invitation', 'cid', array('type' => 'int', 'not null' => TRUE, 'default' => 0, 'description' => 'Component ID of Webform Invitation textfield.'));
-	db_add_field('webform_invitation_codes', 'sid', array('type' => 'int', 'not null' => TRUE, 'default' => 0, 'description' => 'The submission ID using this code.'));
+function webform_participants_update_7200() {
+	db_add_field('webform_participants', 'cid', array('type' => 'int', 'not null' => TRUE, 'default' => 0, 'description' => 'Component ID of Webform Invitation textfield.'));
+	db_add_field('webform_participants_codes', 'sid', array('type' => 'int', 'not null' => TRUE, 'default' => 0, 'description' => 'The submission ID using this code.'));
 }
 
 /**
  * Ensure that existing webform entries in base table have the correct cid set.
  */
-function webform_invitation_update_7201() {
-	$db_settings = db_select('webform_invitation', 'i')
+function webform_participants_update_7201() {
+	$db_settings = db_select('webform_participants', 'i')
 	    ->fields('i')
 	    ->condition('invitation', 1, '=')
 	    ->execute();
@@ -142,8 +142,8 @@ function webform_invitation_update_7201() {
 		 * but we better check for the form_key
 		 */
 	    foreach ($node->webform['components'] AS $id => $com) {
-			if ($com['form_key'] == 'webform_invitation_code') {
-				db_merge('webform_invitation')->key(array('nid' => $result['nid']))
+			if ($com['form_key'] == 'webform_participants_code') {
+				db_merge('webform_participants')->key(array('nid' => $result['nid']))
 				    ->fields(array(
 				      'cid' => $id,
 				      ))
@@ -157,9 +157,9 @@ function webform_invitation_update_7201() {
 /**
  * Alter generated column name since GENERATED is a MySQL reserved word as of 5.7.6.
  */
-function webform_invitation_update_7202() {
-  $schema = webform_invitation_schema();
-  $field = $schema['webform_invitation_codes']['fields']['time_generated'];
+function webform_participants_update_7202() {
+  $schema = webform_participants_schema();
+  $field = $schema['webform_participants_codes']['fields']['time_generated'];
   # We have no keys or indexes on this field. We can just change the field.
-  db_change_field('webform_invitation_codes', 'generated', 'time_generated', $field);
+  db_change_field('webform_participants_codes', 'generated', 'time_generated', $field);
 }
