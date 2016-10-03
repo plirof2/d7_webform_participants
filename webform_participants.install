@@ -75,7 +75,7 @@ function webform_participants_schema() {
 		        'unsigned' => TRUE,
 		        'not null' => TRUE,
 			),
-			'invitation' => array(
+			'participants' => array(
 				'description' => 'Use invitation codes?',
 		        'type' => 'int',
 		        'not null' => TRUE,
@@ -101,7 +101,7 @@ function webform_participants_schema() {
 function webform_participants_disable() {
 	$db_settings = db_select('webform_participants', 'i')
 	    ->fields('i')
-	    ->condition('invitation', 1, '=')
+	    ->condition('participants', 1, '=')
 	    ->execute();
 	while ($result = $db_settings->fetchAssoc()) {
 		$node = node_load($result['nid']);
@@ -133,7 +133,7 @@ function webform_participants_update_7200() {
 function webform_participants_update_7201() {
 	$db_settings = db_select('webform_participants', 'i')
 	    ->fields('i')
-	    ->condition('invitation', 1, '=')
+	    ->condition('participants', 1, '=')
 	    ->execute();
 	while ($result = $db_settings->fetchAssoc()) {
 		$node = node_load($result['nid']);
