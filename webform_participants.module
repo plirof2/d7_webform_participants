@@ -155,15 +155,15 @@ function webform_participants_codes_page($node) {
   $out .= "<p><a href='" . $base_url . "/node/" . $nid . "/webform/participants-download'>" . t('Download Codes') . "</a></p>";
   if (count($codes) > 0) {
     $out .= "<table><tr><th>" . t('mail') . "</th><th>" . t('Code') . "</th><th>" . t('used?') . "</th><th>" . t('Submission ID') . "</th></tr>";//160927 added by J
-  	foreach ($codes as $code) {
-  	  $out .= '<tr><td>' . $code->mail . '</td><td>' . $code->code . '</td><td>' . ($code->used != NULL ? t('yes') : t('no')) . '</td><td>' . ($code->used != NULL ? l($code->sid,'node/' . $nid . '/submission/' . $code->sid) : '') . '</td></tr>';//160927 added by J
-  	}
-  	$out .= '</table>';
+    foreach ($codes as $code) {
+      $out .= '<tr><td>' . $code->mail . '</td><td>' . $code->code . '</td><td>' . ($code->used != NULL ? t('yes') : t('no')) . '</td><td>' . ($code->used != NULL ? l($code->sid,'node/' . $nid . '/submission/' . $code->sid) : '') . '</td></tr>';//160927 added by J
+    }
+    $out .= '</table>';
   }
   else {
     $out .= '<p><em>'.t('No codes present, yet. Click on "Generate" above to create codes.').'</em></p>';
   }
-	return $out;
+  return $out;
 }
 
 function webform_participants_generate_page($node) {
@@ -282,7 +282,7 @@ function webform_participants_mail_reminder_form($form, &$form_state, $node) {
 //++++++++++++++added 160928++++++reminder mail+++
 
 function webform_participants_mail_reminder_form_submit($form, &$form_state) {
-//	simple_mail_send("pliroforikos1@minedu.cu.cc", "pliroforikos@minedu.cu.cc","ΘEMA webform_participants_mail_reminder_submit","ΣΩΜΑ");  	
+//  simple_mail_send("pliroforikos1@minedu.cu.cc", "pliroforikos@minedu.cu.cc","ΘEMA webform_participants_mail_reminder_submit","ΣΩΜΑ");    
 
 // /*
   global $base_url;
@@ -296,35 +296,35 @@ function webform_participants_mail_reminder_form_submit($form, &$form_state) {
     ->execute()->fetchAll();
 
 
-  	if (count($codes) > 0) {
-		foreach ($codes as $code) {
-//				if($code==null)continue;
-				// toDo: καλύτερο custom μήνυμα email
-				$body= 'Καλημέρα. '
-					.$code->fullname.' '
-					.$code->mail.' για να συνδεθείτε με την φόρμα χρειάζεστε τον κωδικό <b> ' 
-					.$code->code. '  ή να χρησιμοποιήσετε αυτόν τον σύνδεσμο : <a href="' 
-					.$base_url . "/node/" . $nid."?code=".$code->code
-					.'" >ΑΤΟΜΙΚΟΣ ΣΥΝΔΕΣΜΟΣ ΕΡΩΤΗΜΑΤΟΛΟΓΙΟΥ</a>'
-					;
-				//ToDo: Ίσως πιο κατατοπιστικό θέμα
-				$subject=   t('Ερωτηματολόγιο :'.$node->title);
-				//$to='"'. addslashes(mime_header_encode('Test mail drupal 160930c ΔΟΚΙΜΗ')) .'" <'.$code->mail.'>';
-				$to=$code->mail;
-				//$to="pliroforikos@minedu.cu.cc"; //debug bypass
-				$from= 'pliroforikos@minedu.cu.cc'; //toDo: Add dynamic drupal admin name
-				//drupal_mail_send($message); //original drupal mail process - replaced by simple_mail_send
-				// simple_mail_send($from, $to, $subject, $body);
-				if(strlen($code->used)==0 || is_null($code->used))	{
-					//toDo: change to simple_mail_queue()
-					simple_mail_send($from, $to, $subject, $body); //must only to users that have NOT used invite_code
-					drupal_set_message(t("simple_sendMAIL:$to SUBJECT:$subject.")); //DEBUG display toDO: add exception handler
-				}
-				
-	}//end of foreach
+    if (count($codes) > 0) {
+    foreach ($codes as $code) {
+//        if($code==null)continue;
+        // toDo: καλύτερο custom μήνυμα email
+        $body= 'Καλημέρα. '
+          .$code->fullname.' '
+          .$code->mail.' για να συνδεθείτε με την φόρμα χρειάζεστε τον κωδικό <b> ' 
+          .$code->code. '  ή να χρησιμοποιήσετε αυτόν τον σύνδεσμο : <a href="' 
+          .$base_url . "/node/" . $nid."?code=".$code->code
+          .'" >ΑΤΟΜΙΚΟΣ ΣΥΝΔΕΣΜΟΣ ΕΡΩΤΗΜΑΤΟΛΟΓΙΟΥ</a>'
+          ;
+        //ToDo: Ίσως πιο κατατοπιστικό θέμα
+        $subject=   t('Ερωτηματολόγιο :'.$node->title);
+        //$to='"'. addslashes(mime_header_encode('Test mail drupal 160930c ΔΟΚΙΜΗ')) .'" <'.$code->mail.'>';
+        $to=$code->mail;
+        //$to="pliroforikos@minedu.cu.cc"; //debug bypass
+        $from= 'pliroforikos@minedu.cu.cc'; //toDo: Add dynamic drupal admin name
+        //drupal_mail_send($message); //original drupal mail process - replaced by simple_mail_send
+        // simple_mail_send($from, $to, $subject, $body);
+        if(strlen($code->used)==0 || is_null($code->used))  {
+          //toDo: change to simple_mail_queue()  instead of simple_mail_send()
+          simple_mail_queue($from, $to, $subject, $body); //must only to users that have NOT used invite_code
+          drupal_set_message(t("simple_sendMAIL:$to SUBJECT:$subject.")); //DEBUG display toDO: add exception handler
+        }
+        
+  }//end of foreach
   }
   else {
-	drupal_set_message('<p><em>'.t('No codes present, yet. Click on "Generate" above to create codes.').'</em></p>'); //toDO: better error display
+  drupal_set_message('<p><em>'.t('No codes present, yet. Click on "Generate" above to create codes.').'</em></p>'); //toDO: better error display
     //$out .= '<p><em>'.t('No codes present, yet. Click on "Generate" above to create codes.').'</em></p>';
   }
 
@@ -428,17 +428,17 @@ function webform_participants_generate_form_submit($form, &$form_state) {
   }
   //added by J 160927++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   elseif ($form_state['values']['type_of_tokens'] == 200) {
-	
-	$string=$form_state['values']['participant_mails'];
-	// this regex handles more email address formats like a+b@google.com.sg, and the i makes it case insensitive
-	//$pattern = '/[a-z0-9_\-\+]+@[a-z0-9\-]+\.([a-z]{2,3})(?:\.[a-z]{2})?/i'; //orig
+  
+  $string=$form_state['values']['participant_mails'];
+  // this regex handles more email address formats like a+b@google.com.sg, and the i makes it case insensitive
+  //$pattern = '/[a-z0-9_\-\+]+@[a-z0-9\-]+\.([a-z]{2,3})(?:\.[a-z]{2})?/i'; //orig
     $pattern="//"; // this just bypasses mail parsing/filtering until we decide how to parse
 
-	// preg_match_all returns an associative array
-	preg_match_all($pattern, $string, $matches);
-	$matches[0] = explode(PHP_EOL, $string);
+  // preg_match_all returns an associative array
+  preg_match_all($pattern, $string, $matches);
+  $matches[0] = explode(PHP_EOL, $string);
 
-	$number = count($matches[0]);  //160927 J Implement this
+  $number = count($matches[0]);  //160927 J Implement this
     $i = $l = 1;
     while ($i <= $number && $l < $number * 10) {
       // Code generation
@@ -463,7 +463,7 @@ function webform_participants_generate_form_submit($form, &$form_state) {
         
       }
       $l++;
-    }	  
+    }   
   }
   //added by J 160927------------------------------------------------------------
   $codes_count = $i - 1;
@@ -524,6 +524,7 @@ function webform_participants_code_validate($form, &$form_state) {
 }
 
 function webform_participants_webform_submission_insert($node, $submission) {
+  //drupal_set_message("   node_id= ".$node->nid."     SUBMISSION_id= ".$submission->sid ."   | " .$submission->sid); //JON DEBUG 161202a submission sid returns null...
   $db_setting = db_select('webform_participants', 'i')
     ->fields('i')
     ->condition('nid', $node->nid, '=')
@@ -542,9 +543,11 @@ function webform_participants_webform_submission_insert($node, $submission) {
         }
       }
     }
+    if(is_null($submission->sid)) {$submission_id=0;} else {$submission_id=$submission->sid;}
     db_update('webform_participants_codes')
       ->fields(array(
-        'sid' => $submission->sid,
+        //'sid' => $submission->sid,
+        'sid' => $submission_id,
       ))
       ->condition('code',$submission->data[$cid][0])
       ->execute();
