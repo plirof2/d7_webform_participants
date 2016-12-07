@@ -1,37 +1,45 @@
 <?php
 /*
-version 1.0f-beta  20161005 -renamed to participants
-1.0a-beta  20160930 : seems to work version
+* version 1.0g-beta  -20161204 - implementing permissions
+* Changes :
+* -20161204 - implementing permissions
+* -20161005 -renamed to participants
+* -1.0a-beta  20160930 : seems to work version
 */
 /**
  * Implements hook_menu().
  */
 function webform_participants_menu() {
   $items = array();
-  $items['node/%webform_menu/webform/participants-settings'] = array(
+  //$items['node/%webform_menu/webform/participants-settings'] = array(
+  $items['node/%webform_menu/Participants/participants-settings'] = array(  	
     'title' => 'Participants Settings',
     'page callback' => 'webform_participants_settings_page',
+    //'page arguments' => array(1),
     'page arguments' => array(1),
-    'access callback' => 'node_access',
-    'access arguments' => array('update', 1),
+    //'access callback' => 'node_access',
+    //'access arguments' => array('update', 1),
+    'access arguments' => array('access_webform_participants_menu'),
     'weight' => 11,
     'type' => MENU_LOCAL_TASK,
   );
-    $items['node/%webform_menu/webform/participants-codes'] = array(
+    $items['node/%webform_menu/Participants/participants-codes'] = array(
     'title' => 'Participants Codes',
     'page callback' => 'webform_participants_generate_page',
     'page arguments' => array(1),
-    'access callback' => 'node_access',
-    'access arguments' => array('update', 1),
+    //'access callback' => 'node_access',
+    //'access arguments' => array('update', 1),
+     'access arguments' => array('access_webform_participants_menu'),
     'weight' => 12,
     'type' => MENU_LOCAL_TASK,
   );
-    $items['node/%webform_menu/webform/participants-reminder'] = array(
+    $items['node/%webform_menu/Participants/participants-reminder'] = array(
     'title' => 'Participants Reminder Mail',
     'page callback' => 'webform_participants_mail_reminder_page',
     'page arguments' => array(1),
-    'access callback' => 'node_access',
-    'access arguments' => array('update', 1),
+    //'access callback' => 'node_access',
+    //'access arguments' => array('update', 1),
+    'access arguments' => array('access_webform_participants_menu'),
     'weight' => 11,
     'type' => MENU_LOCAL_TASK,
   ); 
@@ -39,8 +47,9 @@ function webform_participants_menu() {
     'title' => 'Download Codes',
     'page callback' => 'webform_participants_download_file',
     'page arguments' => array(1),
-    'access callback' => 'node_access',
-    'access arguments' => array('update', 1),
+    //'access callback' => 'node_access',
+    //'access arguments' => array('update', 1),
+     'access arguments' => array('access_webform_participants_menu'),
   );
   return $items;
 }
@@ -589,4 +598,16 @@ function webform_participants_download_file($node) {
 function webform_participants_xlsCell($row,$col,$val) {
   $len = strlen($val);
   return pack("s*", 0x204, 8+$len, $row, $col, 0x0, $len) . $val;
+}
+
+
+/**
+ * Implements hook_permission().
+ */
+function webform_participants_permission() {
+  return array(
+    'access_webform_participants_menu' => array(
+      'title' => t('webform_participants : access webform participants menu'),
+    )
+  );
 }
