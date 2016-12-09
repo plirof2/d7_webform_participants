@@ -1,7 +1,8 @@
 <?php
 /*
-* version 1.1b-beta  -20161208 - Reminder mail is associated with ViewOwnResults menu link
+* version 1.1c-beta  -20161209 - fixed some paths
 * Changes :
+*  1.1b-beta  -20161208 - Reminder mail is associated with ViewOwnResults menu link
 * -20161208 1.1a- Reminder mail is associated with ViewOwnResults menu link
 * -20161204b 1.0- implementing permissions , translate
 * -20161204a - implementing permissions
@@ -45,7 +46,7 @@ function webform_participants_menu() {
     'weight' => 11,
     'type' => MENU_LOCAL_TASK,
   ); 
-  $items['node/%webform_menu/webform/participants-download'] = array(
+  $items['node/%webform_menu/Participants/participants-download'] = array(
     'title' => 'Download Codes',
     'page callback' => 'webform_participants_download_file',
     'page arguments' => array(1),
@@ -163,7 +164,7 @@ function webform_participants_codes_page($node) {
     ->condition('nid', $nid, '=')
     ->execute()->fetchAll();
   $out = "<h2>" . t('All Participant invitation codes for %node_title', array("%node_title" => $node->title)) . "</h2>";
-  $out .= "<p><a href='" . $base_url . "/node/" . $nid . "/webform/participants-download'>" . t('Download Codes') . "</a></p>";
+  $out .= "<p><a href='" . $base_url . "/node/" . $nid . "/Participants/participants-download'>" . t('Download Codes') . "</a></p>";
   if (count($codes) > 0) {
     $out .= "<table><tr><th>" . t('mail') . "</th><th>" . t('Code') . "</th><th>" . t('used?') . "</th><th>" . t('Submission ID') . "</th></tr>";//160927 added by J
     foreach ($codes as $code) {
@@ -276,7 +277,7 @@ function webform_participants_mail_reminder_form($form, &$form_state, $node) {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Αποστολή reminder mail '),
+    '#value' => t('Send reminder mail '),
   );
 
   $form['codes'] = array(
@@ -343,7 +344,7 @@ function webform_participants_mail_reminder_form_submit($form, &$form_state) {
     //$out .= '<p><em>'.t('No codes present, yet. Click on "Generate" above to create codes.').'</em></p>';
   } // end if (count($codes) > 0)
 
-  drupal_goto('node/' . $nid . '/webform/participants-reminder');
+  drupal_goto('node/' . $nid . '/Participants/participants-reminder');
 }
 
 //----------added 160928-------reminder mail submit
@@ -491,7 +492,7 @@ function webform_participants_generate_form_submit($form, &$form_state) {
   elseif ($codes_count >= 2) {
     drupal_set_message(t('A total of @ccount codes has been generated.', array('@ccount' => $codes_count)),'status');
   }
-  drupal_goto('node/' . $nid . '/webform/participants-codes');
+  drupal_goto('node/' . $nid . '/Participants/participants-codes');
 }
 
 function webform_participants_form_alter(&$form, &$form_state, $form_id) {
