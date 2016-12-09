@@ -23,11 +23,11 @@ msgstr ""
 
 #: webform_authcode.module:24
 msgid  "Protect this form"
-msgstr "Προστατέψτε την φόρμα με ένα κεντρικό κωδικό (master password/authcode). (Κάθε φορά που αποθηκεύετε την φόρμα να ελέγχετε εαν αυτή η επιλογή έχει "τσεκαριστεί" αυτόματα.)"
+msgstr "Χρήση <b>master password</b> για την φόρμα αυτή."
 
 #: webform_authcode.module:25
 msgid "Do you want to protect this form with an authorization code?"
-msgstr "Θέλετε να προστατέψετε αυτή την φόρμα με έναν κεντρικό κωδικό ποσβασής (pass phrase/master password);"
+msgstr "Θέλετε να προστατέψετε αυτή την φόρμα με έναν κεντρικό κωδικό προσβασής; (Κάθε φορά που αποθηκεύετε την φόρμα να ελέγχετε εαν αυτή η επιλογή έχει "τσεκαριστεί" αυτόματα.)"
 
 #: webform_authcode.module:31 includes/webform_authcode.pages.inc:21
 msgid "Pass phrase"
@@ -35,7 +35,7 @@ msgstr "Κωδικός φόρμας"
 
 #: webform_authcode.module:32
 msgid "Enter the pass phrase to get access to this webform."
-msgstr Εισάγετε τον κωδικό για να έχετε πρόσβαση στην φόρμα αυτή."
+msgstr "Εισάγετε τον κωδικό για να έχετε πρόσβαση στην φόρμα αυτή."
 
 #: webform_authcode.info:0
 msgid  "Webform authcode"
