@@ -145,7 +145,7 @@ msgstr "ειδικοί χαρακτήρες (#+*=$%&|)"
 
 #: webform_participants.module:247
 msgid "Generate"
-msgstr "Δημιουργία ατομικων κωδικών"
+msgstr "Δημιουργία ατομικών κωδικών"
 
 #: webform_participants.module:268
 msgid "Αποστολή email για την φόρμα με τίτλο <br> %node_title"
