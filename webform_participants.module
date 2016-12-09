@@ -1,37 +1,48 @@
 <?php
 /*
-version 1.0f-beta  20161005 -renamed to participants
-1.0a-beta  20160930 : seems to work version
+* version 1.1c-beta  -20161209 - fixed some paths
+* Changes :
+*  1.1b-beta  -20161208 - Reminder mail is associated with ViewOwnResults menu link
+* -20161208 1.1a- Reminder mail is associated with ViewOwnResults menu link
+* -20161204b 1.0- implementing permissions , translate
+* -20161204a - implementing permissions
+* -20161005 -renamed to participants
+* -1.0a-beta  20160930 : seems to work version
 */
 /**
  * Implements hook_menu().
  */
 function webform_participants_menu() {
   $items = array();
-  $items['node/%webform_menu/webform/participants-settings'] = array(
+  //$items['node/%webform_menu/webform/participants-settings'] = array(  //original
+  $items['node/%webform_menu/Participants/participants-settings'] = array(  	
     'title' => 'Participants Settings',
     'page callback' => 'webform_participants_settings_page',
+    //'page arguments' => array(1),
     'page arguments' => array(1),
     'access callback' => 'node_access',
     'access arguments' => array('update', 1),
+    //'access callback' =>'webform_participants_my_access_callback',
     'weight' => 11,
     'type' => MENU_LOCAL_TASK,
   );
-    $items['node/%webform_menu/webform/participants-codes'] = array(
+    $items['node/%webform_menu/Participants/participants-codes'] = array(
     'title' => 'Participants Codes',
     'page callback' => 'webform_participants_generate_page',
     'page arguments' => array(1),
     'access callback' => 'node_access',
     'access arguments' => array('update', 1),
+    // 'access callback' =>'webform_participants_my_access_callback',
     'weight' => 12,
     'type' => MENU_LOCAL_TASK,
   );
-    $items['node/%webform_menu/webform/participants-reminder'] = array(
+    $items['node/%webform_menu/Participants/participants-reminder'] = array(
     'title' => 'Participants Reminder Mail',
     'page callback' => 'webform_participants_mail_reminder_page',
     'page arguments' => array(1),
-    'access callback' => 'node_access',
-    'access arguments' => array('update', 1),
+    //'access callback' => 'node_access',
+    'access callback' =>'webform_participants_my_access_callback',
+    //'access arguments' => array('update', 1),
     'weight' => 11,
     'type' => MENU_LOCAL_TASK,
   ); 
@@ -39,8 +50,9 @@ function webform_participants_menu() {
     'title' => 'Download Codes',
     'page callback' => 'webform_participants_download_file',
     'page arguments' => array(1),
-    'access callback' => 'node_access',
-    'access arguments' => array('update', 1),
+    'access callback' =>'webform_participants_my_access_callback',
+    //'access callback' => 'node_access',
+    //'access arguments' => array('update', 1),
   );
   return $items;
 }
@@ -265,7 +277,7 @@ function webform_participants_mail_reminder_form($form, &$form_state, $node) {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Αποστολή reminder mail '),
+    '#value' => t('Send reminder mail '),
   );
 
   $form['codes'] = array(
@@ -300,15 +312,15 @@ function webform_participants_mail_reminder_form_submit($form, &$form_state) {
     foreach ($codes as $code) {
 //        if($code==null)continue;
         // toDo: καλύτερο custom μήνυμα email
-        $body= 'Καλημέρα. '
+        $body= t('Καλημέρα. ')
           .$code->fullname.' '
-          .$code->mail.' για να συνδεθείτε με την φόρμα χρειάζεστε τον κωδικό <b> ' 
-          .$code->code. '  ή να χρησιμοποιήσετε αυτόν τον σύνδεσμο : <a href="' 
+          .$code->mail.t(' για να συνδεθείτε με την φόρμα χρειάζεστε τον κωδικό <b> ') 
+          .$code->code. t('  ή να χρησιμοποιήσετε αυτόν τον σύνδεσμο : <a href="' )
           .$base_url . "/node/" . $nid."?code=".$code->code
-          .'" >ΑΤΟΜΙΚΟΣ ΣΥΝΔΕΣΜΟΣ ΕΡΩΤΗΜΑΤΟΛΟΓΙΟΥ</a>'
+          .t('" >ΑΤΟΜΙΚΟΣ ΣΥΝΔΕΣΜΟΣ ΕΡΩΤΗΜΑΤΟΛΟΓΙΟΥ</a>')
           ;
         //ToDo: Ίσως πιο κατατοπιστικό θέμα
-        $subject=   t('Ερωτηματολόγιο :'.$node->title);
+        $subject=   t('Ερωτηματολόγιο :').$node->title;
         //$to='"'. addslashes(mime_header_encode('Test mail drupal 160930c ΔΟΚΙΜΗ')) .'" <'.$code->mail.'>';//debug
         $to=$code->mail;
         //$to="pliroforikos@minedu.cu.cc"; //debug bypass
@@ -322,7 +334,7 @@ function webform_participants_mail_reminder_form_submit($form, &$form_state) {
           // Validate e-mail and send it
           if (!filter_var($tmp_to_email, FILTER_VALIDATE_EMAIL) === false) {
             simple_mail_queue($from, $tmp_to_email, $subject, $body); //must only to users that have NOT used invite_code
-            drupal_set_message(t("WebformParticipants Στάλθηκέ μαιλ στο : $to Με θέμα: $subject.")); //DEBUG display toDO: add exception handler
+            drupal_set_message(t("WebformParticipants Στάλθηκέ μαιλ στο : ").$to.t(" Με θέμα: ").$subject); //DEBUG display toDO: add exception handler
           } // end if (!filter_var
         } // end if(strlen($code->used)==0 
   }//end of foreach
@@ -332,7 +344,7 @@ function webform_participants_mail_reminder_form_submit($form, &$form_state) {
     //$out .= '<p><em>'.t('No codes present, yet. Click on "Generate" above to create codes.').'</em></p>';
   } // end if (count($codes) > 0)
 
-  drupal_goto('node/' . $nid . '/webform/participants-reminder');
+  drupal_goto('node/' . $nid . '/Participants/participants-reminder');
 }
 
 //----------added 160928-------reminder mail submit
@@ -480,7 +492,7 @@ function webform_participants_generate_form_submit($form, &$form_state) {
   elseif ($codes_count >= 2) {
     drupal_set_message(t('A total of @ccount codes has been generated.', array('@ccount' => $codes_count)),'status');
   }
-  drupal_goto('node/' . $nid . '/webform/participants-codes');
+  drupal_goto('node/' . $nid . '/Participants/participants-codes');
 }
 
 function webform_participants_form_alter(&$form, &$form_state, $form_id) {
@@ -589,4 +601,37 @@ function webform_participants_download_file($node) {
 function webform_participants_xlsCell($row,$col,$val) {
   $len = strlen($val);
   return pack("s*", 0x204, 8+$len, $row, $col, 0x0, $len) . $val;
+}
+
+
+/**
+ * Implements hook_permission().
+ * add a permission "access_webform_participants_menu"
+ */
+function webform_participants_permission() {
+  return array(
+    'access_webform_participants_menu' => array(
+      'title' => t('webform_participants : access webform participants menu'),
+    )
+  );
+}
+
+
+/**
+callback access function
+Checks if current user has access to the results on this node & access to
+*/
+function webform_participants_my_access_callback() {
+	//get node
+	$nid = 0;
+	if (arg(0) == 'node' && is_numeric(arg(1))) {
+	    $nid = arg(1);
+	}
+	$node = node_load($nid);
+	//$nodeurl = url('node/'. $node->nid);
+	$nodeurl_relative ='node/'. $node->nid;
+	//drupal_set_message("nodeurl = ".$nodeurl); //shows FULL url eg /test_installation/node/321423/  -We do not want that
+	//drupal_set_message("valid path (test participants form)= $nodeurl_relative nodeurl_relative/webform-results= ".drupal_valid_path($nodeurl_relative.'/webform-results'));
+  //return drupal_valid_path($nodeurl_relative.'/webform-results') && user_access('access_webform_participants_menu');  //ok WORKS 
+  return drupal_valid_path($nodeurl_relative.'/webform-results') ; // at this point we choose to ignore it. Reminder email is tied with webforms_results view
 }
