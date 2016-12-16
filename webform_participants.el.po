@@ -29,15 +29,15 @@ msgstr "Αποθήκευση"
 
 #: webform_participants.module:90
 msgid "Participants mode has been activated. You should now <a href=\"!base_url/node/!nid/participants/generate\">create some Participants invitation codes</a>."
-msgstr "Έχει ενεργοποιηθεί το participants_module. Τώρα πρέπει να <a href=\"!base_url/node/!nid/participants/generate\">δημιουργήσετε μερικούς κωδικούς για τους συμμετέχοντες</a>."
+msgstr "Έχει ενεργοποιηθεί το participants_module. Τώρα πρέπει να <a href=\"!base_url/node/!nid/participants/generate\">δημιουργήσετε μερικούς κωδικούς για τους αποδέκτες</a>."
 
 #: webform_participants.module:110
 msgid "Participant Invite Code"
-msgstr "Κωδικός συμμετοχής"
+msgstr "Ατομικός κωδικός συμμετοχής"
 
 #: webform_participants.module:114
 msgid "Enter your personal invitation code (only applies if the field is not populated yet)."
-msgstr "Εισάγετε τον προσωπικό κώδικα συμμετοχής"
+msgstr "Εισάγετε τον ατομικό κώδικα συμμετοχής."
 
 #: webform_participants.module:137
 msgid "Participants Invitation mode has been disabled."
@@ -93,7 +93,7 @@ msgstr "Αριθμός# κωδικών που θέλουμε να δημιουρ
 
 #: webform_participants.module:204
 msgid "paste email of the participants here (1 mail in each line)"
-msgstr "Αντιγράψτε εδώ τα μαιλ των συμμετεχόντων (1 μαιλ σε κάθε γραμμή)"
+msgstr "Αντιγράψτε εδώ τα μαιλ των αποδεκτών (1 μαιλ σε κάθε γραμμή)"
 
 #: webform_participants.module:210
 msgid "Options"
@@ -148,44 +148,44 @@ msgid "Generate"
 msgstr "Δημιουργία ατομικών κωδικών"
 
 #: webform_participants.module:268
-msgid "Αποστολή email για την φόρμα με τίτλο <br> %node_title"
+msgid  "Αποστολή email για την φόρμα με τίτλο <br> %node_title"
 msgstr "Αποστολή email για την φόρμα με τίτλο <br> %node_title"
 
 #: webform_participants.module:268
-msgid "To send mail to all the users that have NOT used the participant invitation code hit the button."
+msgid  "To send mail to all the users that have NOT used the participant invitation code hit the button."
 msgstr "Για να αποστείλετε εμαιλ σε όλους τους χρήστες που ΔΕΝ έχουν χρησιμοποιήσει τον κωδικό τους πατήστε το κουμπί."
 
 #: webform_participants.module:277
-msgid "Αποστολή reminder mail "
-msgstr "Αποστολή υπενθύμιση με mail "
+msgid "Send reminder mail "
+msgstr "Αποστολή υπενθύμισης με mail "
 
 #: webform_participants.module:312
 msgid "Καλημέρα. "
-msgstr ""
+msgstr "Καλημέρα. "
 
 #: webform_participants.module:314
 msgid " για να συνδεθείτε με την φόρμα χρειάζεστε τον κωδικό <b> "
-msgstr ""
+msgstr " για να συνδεθείτε με την φόρμα χρειάζεστε τον κωδικό <b> "
 
 #: webform_participants.module:315
-msgid "  ή να χρησιμοποιήσετε αυτόν τον σύνδεσμο : <a href=\""
-msgstr ""
+msgid  "  ή να χρησιμοποιήσετε αυτόν τον σύνδεσμο : <a href=\""
+msgstr "  ή να χρησιμοποιήσετε αυτόν τον σύνδεσμο : <a href=\""
 
 #: webform_participants.module:317
-msgid "\" >ΑΤΟΜΙΚΟΣ ΣΥΝΔΕΣΜΟΣ ΕΡΩΤΗΜΑΤΟΛΟΓΙΟΥ</a>"
-msgstr ""
+msgid  "\" >ΑΤΟΜΙΚΟΣ ΣΥΝΔΕΣΜΟΣ ΕΡΩΤΗΜΑΤΟΛΟΓΙΟΥ</a>"
+msgstr "\" >ΑΤΟΜΙΚΟΣ ΣΥΝΔΕΣΜΟΣ ΕΡΩΤΗΜΑΤΟΛΟΓΙΟΥ</a>"
 
 #: webform_participants.module:320
-msgid "Ερωτηματολόγιο :"
-msgstr ""
+msgid  "Ερωτηματολόγιο :"
+msgstr "Ερωτηματολόγιο :"
 
 #: webform_participants.module:334
-msgid "WebformParticipants Στάλθηκέ μαιλ στο : "
-msgstr ""
+msgid  "WebformParticipants Στάλθηκέ μαιλ στο : "
+msgstr "WebformParticipants Στάλθηκέ μαιλ στο : "
 
 #: webform_participants.module:334
-msgid " Με θέμα: "
-msgstr ""
+msgid  " Με θέμα: "
+msgstr " Με θέμα: "
 
 #: webform_participants.module:352;361
 msgid "Enter an integer only."
@@ -205,15 +205,15 @@ msgstr ""
 
 #: webform_participants.module:484
 msgid "Due to unique constraint, only @ccount codes have been generated."
-msgstr ""
+msgstr "Λόγω κάποιου θέματος, μόνο @ccount ατομικοί κωδικοί έχουν δημιουργηθεί."
 
 #: webform_participants.module:487
 msgid "A single code has been generated."
-msgstr ""
+msgstr "Δημιουργήθηκε ένας ατομικός κωδικός."
 
 #: webform_participants.module:490
 msgid "A total of @ccount codes has been generated."
-msgstr ""
+msgstr "Δημιουργήθηκαν σηνολικά @ccount ατομικο κωδικοί."
 
 #: webform_participants.module:521
 msgid "This code is not valid."
@@ -241,7 +241,7 @@ msgstr ""
 
 #: webform_participants.info:0
 msgid "Provides random strings that can be used as codes for accessing a specific webform and sends them to participant mails.(based on webform invitation 7.x-2.4+1-dev)"
-msgstr "Παρέχει κωδικούς για μια συγκεκριμένη φόρμα και τους αποστέλει με μαιλ στα άτομα που θα επιλέξουμε."
+msgstr "Παρέχει κωδικούς για μια συγκεκριμένη φόρμα και τους αποστέλει με μαιλ στα άτομα που θα επιλέξουμε (αποδέκτες)."
 
 #: webform_participants.info:0
 msgid "Webform"
