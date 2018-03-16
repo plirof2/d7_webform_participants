@@ -1,5 +1,6 @@
 <?php
 /*
+* version 1.1e-beta  -20180314 - fixed greek
 * version 1.1d-beta  -20161212 - fixed email
 * Changes :
 *  1.1c-beta  -20161209 - fixed some paths
@@ -269,7 +270,7 @@ function webform_participants_mail_reminder_page($node) {
 function webform_participants_mail_reminder_form($form, &$form_state, $node) {
   $nid = $node->nid;
   $form['intro'] = array(
-    '#markup' => '<h2>' . t('Αποστολή email για την φόρμα με τίτλο <br> %node_title', array("%node_title" => $node->title)) . '</h2><p>' . t('To send mail to all the users that have NOT used the participant invitation code hit the button.') . '</p>',
+    '#markup' => '<h2>' . t('Send email for webform with title <br> %node_title', array("%node_title" => $node->title)) . '</h2><p>' . t('To send mail to all the users that have NOT used the participant invitation code hit the button.') . '</p>',
   );
   $form['nid'] = array(
     '#type' => 'hidden',
@@ -313,15 +314,15 @@ function webform_participants_mail_reminder_form_submit($form, &$form_state) {
     foreach ($codes as $code) {
 //        if($code==null)continue;
         // toDo: καλύτερο custom μήνυμα email
-        $body= t('Καλημέρα. ')
+        $body= t('Hello. ')
           .$code->fullname.' '
-          .$code->mail.t(' για να συνδεθείτε με την φόρμα χρειάζεστε τον κωδικό <b> ') 
-          .$code->code. t('  ή να χρησιμοποιήσετε αυτόν τον σύνδεσμο : <a href="' )
+          .$code->mail.t(' to activate this form you will need this participant code: <b> ') 
+          .$code->code. t('  or use this link ή : <a href="' )
           .$base_url . "/node/" . $nid."?code=".$code->code
-          .t('" >ΑΤΟΜΙΚΟΣ ΣΥΝΔΕΣΜΟΣ ΕΡΩΤΗΜΑΤΟΛΟΓΙΟΥ</a>')
+          .t('" >PERSONALIZED LINK TO FORM</a>')
           ;
         //ToDo: Ίσως πιο κατατοπιστικό θέμα
-        $subject=   t('Ερωτηματολόγιο :').$node->title;
+        $subject=   t('Form :').$node->title;
         $to=$code->mail;
         $from= variable_get('site_mail', ''); //get global site name
         // simple_mail_send($from, $to, $subject, $body); //syntax
@@ -333,7 +334,7 @@ function webform_participants_mail_reminder_form_submit($form, &$form_state) {
           if (!filter_var($tmp_to_email, FILTER_VALIDATE_EMAIL) === false) {
             //simple_mail_send($from, $tmp_to_email, $subject, $body); //must only to users that have NOT used invite_code
             simple_mail_queue($from, $tmp_to_email, $subject, $body); //must only to users that have NOT used invite_code
-            drupal_set_message(t("WebformParticipants Στάλθηκέ μαιλ στο : ").$to.t(" Με θέμα: ").$subject); //DEBUG display toDO: add exception handler
+            drupal_set_message(t("WebformParticipants an email is send to : ").$to.t(" With subject: ").$subject); //DEBUG display toDO: add exception handler
           } // end if (!filter_var
         } // end if(strlen($code->used)==0 
   }//end of foreach

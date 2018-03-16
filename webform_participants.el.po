@@ -148,7 +148,7 @@ msgid "Generate"
 msgstr "Δημιουργία ατομικών κωδικών"
 
 #: webform_participants.module:268
-msgid  "Αποστολή email για την φόρμα με τίτλο <br> %node_title"
+msgid  "Send email for webform with title <br> %node_title"
 msgstr "Αποστολή email για την φόρμα με τίτλο <br> %node_title"
 
 #: webform_participants.module:268
@@ -160,31 +160,31 @@ msgid "Send reminder mail "
 msgstr "Αποστολή υπενθύμισης με mail "
 
 #: webform_participants.module:312
-msgid "Καλημέρα. "
+msgid "Hello. "
 msgstr "Καλημέρα. "
 
 #: webform_participants.module:314
-msgid " για να συνδεθείτε με την φόρμα χρειάζεστε τον κωδικό <b> "
+msgid " to activate this form you will need this participant code: <b> "
 msgstr " για να συνδεθείτε με την φόρμα χρειάζεστε τον κωδικό <b> "
 
 #: webform_participants.module:315
-msgid  "  ή να χρησιμοποιήσετε αυτόν τον σύνδεσμο : <a href=\""
+msgid  "  or use this link ή : <a href=\""
 msgstr "  ή να χρησιμοποιήσετε αυτόν τον σύνδεσμο : <a href=\""
 
 #: webform_participants.module:317
-msgid  "\" >ΑΤΟΜΙΚΟΣ ΣΥΝΔΕΣΜΟΣ ΕΡΩΤΗΜΑΤΟΛΟΓΙΟΥ</a>"
+msgid  "\" >PERSONALIZED LINK TO FORM</a>"
 msgstr "\" >ΑΤΟΜΙΚΟΣ ΣΥΝΔΕΣΜΟΣ ΕΡΩΤΗΜΑΤΟΛΟΓΙΟΥ</a>"
 
 #: webform_participants.module:320
-msgid  "Ερωτηματολόγιο :"
+msgid  "Form :"
 msgstr "Ερωτηματολόγιο :"
 
 #: webform_participants.module:334
-msgid  "WebformParticipants Στάλθηκέ μαιλ στο : "
+msgid  "WebformParticipants an email is send to : "
 msgstr "WebformParticipants Στάλθηκέ μαιλ στο : "
 
 #: webform_participants.module:334
-msgid  " Με θέμα: "
+msgid  " With subject: "
 msgstr " Με θέμα: "
 
 #: webform_participants.module:352;361
